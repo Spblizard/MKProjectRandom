@@ -115,7 +115,12 @@ ApplicationWindow {
             border.color: "black"
             width: mainListView.width / 8
             height: mainListView.height
-            Text { anchors.fill: parent; text: model.name; }
+            Text {
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: model.name
+            }
         }
     }
 
@@ -137,7 +142,8 @@ ApplicationWindow {
                 anchors.fill: parent
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
-                text: model.name }
+                text: model.name
+            }
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -160,6 +166,66 @@ ApplicationWindow {
                         newRound()
                         newGenerate()
                     }
+                }
+            }
+        }
+    }
+    Button {
+        id: saveButton
+        text: "save"
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            leftMargin: (parent.width / 2) - width
+        }
+        onClicked: {
+            mkp.save()
+            mkp.stateCountListSave("count", count)
+            mkp.stateCountListSave("round", round)
+            mkp.stateCountListSave("widthSize", widthSize)
+            mkp.stateCountListSave("mainDataModel", mainDataModel.count)
+            if (mainDataModel.count !== 0) {
+                for (var i = 0; i < mainDataModel.count; i++) {
+                    var obj = mainDataModel.get(i)
+                    mkp.stateSave("mainDataModel", obj["name"], i)
+                }
+            }
+            mkp.stateCountListSave("dataModel", dataModel.count)
+            for (var j = 0; j < dataModel.count; j++) {
+                listView.currentIndex = j
+                if (listView.currentItem.visible) {
+                    var obj1 = dataModel.get(j)
+                    mkp.stateSave("dataModel", obj1["name"], j)
+                } else {
+                    mkp.stateSave("dataModel", "NULL", j)
+                }
+            }
+        }
+    }
+    Button {
+        id: loadButton
+        text: "load"
+        anchors.left: saveButton.right
+        anchors.top: saveButton.top
+        onClicked: {
+            mkp.load()
+            count = mkp.stateCountListLoad("count")
+            round = mkp.stateCountListLoad("round")
+            widthSize = mkp.stateCountListLoad("widthSize")
+            var countMainData = mkp.stateCountListLoad("mainDataModel")
+            if (countMainData !== 0) {
+                mainDataModel.clear()
+                for (var i = 0; i < countMainData; i++)
+                    mainDataModel.append({ "name": mkp.stateLoad("mainDataModel", i) })
+            }
+            var countData = mkp.stateCountListLoad("dataModel")
+            dataModel.clear()
+            for (var j = 0; j < countData; j++) {
+                var tmpName = mkp.stateLoad("dataModel", j)
+                dataModel.append({ "name": tmpName })
+                if (tmpName === "NULL") {
+                    listView.currentIndex = j
+                    listView.currentItem.visible = false
                 }
             }
         }

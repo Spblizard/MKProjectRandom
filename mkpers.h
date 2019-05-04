@@ -13,11 +13,8 @@ class MKPers : public QObject
 {
     Q_OBJECT
 private:
-    QString str[8];
-    QString winPers[8];
-    QString subPers[8];
-    QString grandPers[2];
-    QString pers[4][16] = {
+    QString mStr[8];
+    QString mPers[4][16] = {
         {"Sheeva", "Baraka", "Sindel", "Nightwolf", "Jhonny\nCage", "Liu Kang", "Shang\nTsung", "Sonya", "Stryker", "Kabal", "Jax", "Kung Lao", "Kano", "Cyrax\nCyborg", "Sektor", "Smoke\nCyborg"},
         {"Mileena", "Sub-Zero\nMKIII", "Kitana", "Jade\nUMKIII", "Sub-Zero\nUMKIII", "Ermac\nUMKIII", "Reptile\nUMKIII", "Rain\nUMKIII", "Scorpion\nUMKIII", "Tremor\nUMKIII", "Noob-Saibot\nUMKIII", "Raiden", "Hornbuckle", "Leviathan", "Flame", "Snake"},
         {"Ruby", "Hydro", "Cyrax\nMKP", "Chameleon\nMKT", "Noob Smoke", "Magnectro", "Tanya", "Nightmare", "Khameleon", "Smoke\nWomen", "Smoke MKT", "Dark", "Toxic", "Tremor\nCyborg", "LK-52", "Hydro\nCyborg"},
@@ -33,8 +30,10 @@ public slots:
     void randomPers();
     void save();
     void load();
-    void stateSave(QString, int);
-    QString stateLoad(int);
+    void stateSave(QString,QString, int);
+    QString stateLoad(QString, int);
+    void stateCountListSave(QString, int);
+    int stateCountListLoad(QString);
 };
 
 #endif // MKPERS_H
