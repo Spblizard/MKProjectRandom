@@ -9,408 +9,152 @@ ApplicationWindow {
     height: 480
     title: qsTr("MKProjectRandom")
 
-    Row {
-        id: row1
-        width: parent.width / 8
-        height: parent.height / 4
-        Rectangle {
-            id: rect1
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt1; text: mkp.mkPers(0); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt1.clear()
-                    edtTxt1.insert(0, mkp.mkPers(0))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt2.getText(0, 20), 1)
-                }
-            }
+    property int widthSize: 8
+    property int heightSize: 1
+    property int count: 0
+    property int round: 1
+    property bool grandRound: false
+
+    Component.onCompleted: {
+        for (var i = 0; i < 8; i++) {
+            dataModel.append({ "name": mkp.mkPers(i)})
         }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt2; text: mkp.mkPers(1); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt1.clear()
-                    edtTxt1.insert(0, mkp.mkPers(1))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt1.getText(0, 20), 1)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt3; text: mkp.mkPers(2); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt2.clear()
-                    edtTxt2.insert(0, mkp.mkPers(2))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt4.getText(0, 20), 2)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt4; text: mkp.mkPers(3); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt2.clear()
-                    edtTxt2.insert(0, mkp.mkPers(3))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt3.getText(0, 20), 2)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt5; text: mkp.mkPers(4); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt3.clear()
-                    edtTxt3.insert(0, mkp.mkPers(4))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt6.getText(0, 20), 3)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt6; text: mkp.mkPers(5); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt3.clear()
-                    edtTxt3.insert(0, mkp.mkPers(5))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt5.getText(0, 20), 3)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt7; text: mkp.mkPers(6); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt4.clear()
-                    edtTxt4.insert(0, mkp.mkPers(6))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt8.getText(0, 20), 4)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: txt8; text: mkp.mkPers(7); anchors.centerIn: parent }
-            MouseArea { anchors.fill: parent
-                onClicked: {
-                    edtTxt4.clear()
-                    edtTxt4.insert(0, mkp.mkPers(7))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(txt7.getText(0, 20), 4)
-                }
-            }
-        }
+        //timer.start()
     }
-    Row {
-        id: row2
-        anchors.top: row1.bottom
-        width: parent.width / 4
-        height: parent.height / 4
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: edtTxt1; anchors.centerIn: parent}
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    edtTxt5.clear()
-                    edtTxt5.insert(0, edtTxt1.getText(0, 20))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(edtTxt2.getText(0, 20), 5)
-                }
+
+    function nextRound() {
+        var arr = new Array()
+        for (var i = 0; i < listView.count; i++) {
+            listView.currentIndex = i
+            if (listView.currentItem.visible === true) {
+                var obj = dataModel.get(i)
+                arr.push(obj["name"])
             }
         }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: edtTxt2; anchors.centerIn: parent }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    edtTxt5.clear()
-                    edtTxt5.insert(0, edtTxt2.getText(0, 20))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(edtTxt1.getText(0, 20), 5)
-                }
-            }
+        dataModel.clear()
+        for (var j = 0; j < arr.length; j++) {
+            dataModel.append({ "name": arr[j] })
         }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: edtTxt3; anchors.centerIn: parent }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    edtTxt6.clear()
-                    edtTxt6.insert(0, edtTxt3.getText(0, 20))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(edtTxt4.getText(0, 20), 6)
-                }
-            }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-            TextEdit { id: edtTxt4; anchors.centerIn: parent }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    edtTxt6.clear()
-                    edtTxt6.insert(0, edtTxt4.getText(0, 20))
-                    if (mkp.outInt() === 8)
-                        mkp.subLose(edtTxt3.getText(0, 20), 6)
+        round++
+        listView.currentIndex = 0
+        count = 0
+        if (round === 2)
+            widthSize = 4
+        else if (round === 3)
+            widthSize = 2
+    }
+
+    function newRound() {
+        if (grandRound) {
+            round = 1
+            count = 0
+        } else {
+            for (var i = 0; i < listView.count; i++) {
+                listView.currentIndex = i
+                if (listView.currentItem.visible === true) {
+                    var obj = dataModel.get(i)
+                    mainDataModel.append({ "name": obj["name"] })
+                    dataModel.clear()
+                    round = 1
+                    count = 0
                 }
             }
         }
     }
 
-    Row {
-        id: row3
-        anchors.top: row2.bottom
-        width: parent.width / 2
-        height: parent.height / 4
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-
-            TextEdit {
-                id: edtTxt5
-                anchors.centerIn: parent
-                font.pointSize: parent.height / 4
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    if (mkp.outInt() < 8) {
-                        mkp.winners(edtTxt5.getText(0, 20))
-                        edtTxt7.clear()
-                        edtTxt7.insert(0, "Master " + mkp.numbToStr() + " " + edtTxt5.getText(0, 20))
-                    } else if (mkp.outInt () === 8) {
-                        mkp.takeGrandPers(edtTxt5.getText(0, 20))
-                        mkp.subLose(edtTxt6.getText(0, 20), 7)
-                        edtTxt7.clear()
-                        edtTxt7.insert(0, "Grand Master " + "1 " + edtTxt5.getText(0, 20))
-                    } else if (mkp.outInt() === 9) {
-                        mkp.takeGrandPers(edtTxt5.getText (0, 20))
-                        edtTxt7.clear()
-                        edtTxt7.insert(0, "Grand Master " + "2 " + edtTxt5.getText(0, 20))
-                    } else if (mkp.outInt() === 10)
-                        edtTxt7.insert(0, "Champion MKProject " + edtTxt5.getText(0, 20))
+    function newGenerate() {
+        if (grandRound) {
+            for (var a = 0; a < dataModel.count; a++) {
+                listView.currentIndex = a
+                if (listView.currentItem.visible === true) {
+                    var obj = dataModel.get(a)
+                    var numb = obj["name"]
+                    dataModel.clear()
+                    dataModel.append({ "name": "Ultimate Champion MK Project " + numb })
+                    widthSize = 1
+                    listView.currentItem.enabled = false
                 }
             }
-        }
-        Rectangle {
-            width: parent.width
-            height: parent.height
-            border.color: "black"
-            border.width: 1
-
-            TextEdit {
-                id: edtTxt6
-                anchors.centerIn: parent
-                font.pointSize: parent.height / 4
+        } else if (mainDataModel.count === 8 && !grandRound) {
+            for (var j = 0; j < mainDataModel.count; j++)
+                dataModel.append(mainDataModel.get(j))
+            mainDataModel.clear()
+            widthSize = 8
+            grandRound = true
+        } else if (!grandRound){
+            mkp.randomPers()
+            for (var i = 0; i < 8; i++) {
+                dataModel.append({ "name": mkp.mkPers(i)})
             }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    if (mkp.outInt() < 8) {
-                        mkp.winners(edtTxt6.getText(0, 20))
-                        edtTxt7.clear()
-                        edtTxt7.insert(0, "Master " + mkp.numbToStr() + " " + edtTxt6.getText(0, 20))
-                    } else if (mkp.outInt () === 8) {
-                        mkp.takeGrandPers(edtTxt6.getText(0, 20))
-                        mkp.subLose(edtTxt5.getText(0, 20), 7)
-                        edtTxt7.clear()
-                        edtTxt7.insert(0, "Grand Master " + "1 " + edtTxt6.getText(0, 20))
-                    } else if (mkp.outInt() === 9) {
-                        mkp.takeGrandPers(edtTxt6.getText (0, 20))
-                        edtTxt7.clear()
-                        edtTxt7.insert(0, "Grand Master " + "2 " + edtTxt6.getText(0, 20))
-                    } else if (mkp.outInt() === 10)
-                        edtTxt7.insert(0, "Champion MKProject " + edtTxt6.getText(0, 20))
-                }
-            }
+            widthSize = 8
         }
     }
-    Column {
-        id: row4
-        anchors.top: row3.bottom
+
+    Timer {
+        id: timer
+        running: false
+        interval: 5000
+        repeat: false
+        onTriggered: {
+            listView.currentIndex = 3
+            listView.currentItem.visible = false
+        }
+    }
+
+    ListView {
+        id: mainListView
         width: parent.width
-        height: parent.height /4
-        Rectangle {
-            width: parent.width
-            height: parent.height / 2
+        height: parent.height / 4
+        anchors.top: parent.top
+        model: ListModel {
+            id: mainDataModel
+        }
+        orientation: Qt.Horizontal
+        layoutDirection: Qt.LeftToRight
+        delegate: Rectangle {
             border.color: "black"
-            border.width: 1
-            TextEdit {
-                id: edtTxt7
-                anchors.centerIn: parent
-                font.pointSize: parent.height / 4
-            }
+            width: mainListView.width / 8
+            height: mainListView.height
+            Text { anchors.centerIn: parent; text: model.name; }
+        }
+    }
+
+    ListView {
+        id: listView
+        width: parent.width
+        height: parent.height / 4
+        anchors.centerIn: parent
+        model: ListModel {
+            id: dataModel
+        }
+        orientation: Qt.Horizontal
+        layoutDirection: Qt.LeftToRight
+        delegate: Rectangle {
+            border.color: "black"
+            width: listView.width / widthSize
+            height: listView.height / heightSize
+            Text { anchors.centerIn: parent; text: model.name; }
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if (edtTxt7.getText(0, 20) !== "") {
-                        mkp.numbPlus()
-                        if (mkp.outInt() > 10)
-                                Qt.quit()
-                        txt1.clear()
-                        txt2.clear()
-                        txt3.clear()
-                        txt4.clear()
-                        txt5.clear()
-                        txt6.clear()
-                        txt7.clear()
-                        txt8.clear()
-                        if (mkp.outInt() < 8)
-                           mkp.randomPers()
-                        if (mkp.outInt() < 10) {
-                            txt1.insert(0, mkp.mkPers(0))
-                            txt2.insert(0, mkp.mkPers(1))
-                            txt3.insert(0, mkp.mkPers(2))
-                            txt4.insert(0, mkp.mkPers(3))
-                            txt5.insert(0, mkp.mkPers(4))
-                            txt6.insert(0, mkp.mkPers(5))
-                            txt7.insert(0, mkp.mkPers(6))
-                            txt8.insert(0, mkp.mkPers(7))
-                        }
-                        edtTxt1.clear()
-                        edtTxt2.clear()
-                        edtTxt3.clear()
-                        edtTxt4.clear()
-                        edtTxt5.clear()
-                        edtTxt6.clear()
-                        edtTxt7.clear()
-                        if (mkp.outInt() === 10) {
-                            edtTxt5.clear()
-                            edtTxt6.clear()
-                            edtTxt5.insert(0, mkp.gPers(0))
-                            edtTxt6.insert(0, mkp.gPers(1))
-                        }
+                    if (index % 2) {
+                        enabled = false
+                        listView.currentIndex = index - 1
+                        listView.currentItem.visible = false
+                        count++
+                    } else {
+                        enabled = false
+                        listView.currentIndex = index + 1
+                        listView.currentItem.visible = false
+                        count++
                     }
-                }
-            }
-        }
-        Row {
-            id: row5
-            width: parent.width
-            height: parent.height / 2
-            Rectangle {
-                id: rect2
-                width: parent.width / 2
-                height: parent.height
-                border.color: "black"
-                border.width: 1
-                color: "cyan"
-                Text { anchors.centerIn: parent; font.pointSize: parent.height / 4; text: "Save" }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        mkp.save()
-                        mkp.stateSave(txt1.getText(0, 20), 1)
-                        mkp.stateSave(txt2.getText(0, 20), 2)
-                        mkp.stateSave(txt3.getText(0, 20), 3)
-                        mkp.stateSave(txt4.getText(0, 20), 4)
-                        mkp.stateSave(txt5.getText(0, 20), 5)
-                        mkp.stateSave(txt6.getText(0, 20), 6)
-                        mkp.stateSave(txt7.getText(0, 20), 7)
-                        mkp.stateSave(txt8.getText(0, 20), 8)
-                        mkp.stateSave(edtTxt1.getText(0, 20), 9)
-                        mkp.stateSave(edtTxt2.getText(0, 20), 10)
-                        mkp.stateSave(edtTxt3.getText(0, 20), 11)
-                        mkp.stateSave(edtTxt4.getText(0, 20), 12)
-                        mkp.stateSave(edtTxt5.getText(0, 20), 13)
-                        mkp.stateSave(edtTxt6.getText(0, 20), 14)
-                        mkp.stateSave(edtTxt7.getText(0, 20), 15)
-                    }
-                }
-            }
-            Rectangle {
-                id: rect3
-                width: parent.width / 2
-                height: parent.height
-                border.color: "black"
-                border.width: 1
-                color: "cyan"
-                Text { anchors.centerIn: parent; font.pointSize: parent.height / 4; text: "Load" }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        mkp.load()
-                        txt1.clear()
-                        txt2.clear()
-                        txt3.clear()
-                        txt4.clear()
-                        txt5.clear()
-                        txt6.clear()
-                        txt7.clear()
-                        txt8.clear()
-                        edtTxt1.clear()
-                        edtTxt2.clear()
-                        edtTxt3.clear()
-                        edtTxt4.clear()
-                        edtTxt5.clear()
-                        edtTxt6.clear()
-                        edtTxt7.clear()
-                        txt1.insert(0, mkp.stateLoad(1))
-                        txt2.insert(0, mkp.stateLoad(2))
-                        txt3.insert(0, mkp.stateLoad(3))
-                        txt4.insert(0, mkp.stateLoad(4))
-                        txt5.insert(0, mkp.stateLoad(5))
-                        txt6.insert(0, mkp.stateLoad(6))
-                        txt7.insert(0, mkp.stateLoad(7))
-                        txt8.insert(0, mkp.stateLoad(8))
-                        edtTxt1.insert(0, mkp.stateLoad(9))
-                        edtTxt2.insert(0, mkp.stateLoad(10))
-                        edtTxt3.insert(0, mkp.stateLoad(11))
-                        edtTxt4.insert(0, mkp.stateLoad(12))
-                        edtTxt5.insert(0, mkp.stateLoad(13))
-                        edtTxt6.insert(0, mkp.stateLoad(14))
-                        edtTxt7.insert(0, mkp.stateLoad(15))
+                    if (count === 4 && round === 1) {
+                        nextRound()
+                    } else if (count === 2 && round === 2) {
+                        nextRound()
+                    } else if (count === 1 && round === 3) {
+                        newRound()
+                        newGenerate()
                     }
                 }
             }

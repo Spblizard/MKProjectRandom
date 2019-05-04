@@ -7,24 +7,17 @@ MKPers::MKPers(QObject *parent) : QObject(parent)
 
 QString MKPers::mkPers(int i)
 {
-    if (numb < 8)
-        return str[i];
-    else if (numb == 8)
-        return winPers[i];
-    else if (numb == 9)
-        return subPers[i];
+    return str[i];
 }
 
 void MKPers::randomPers()
 {
-    if (numb == 0)
-        subMaster();
     QTime midnight(0, 0, 0);
     qsrand(midnight.secsTo (QTime::currentTime()));
     int a[8], b[8];
     for (int j = 0; j < 8; j++) {
-        a[j] = qrand() % 5;
-        b[j] = qrand() % 13;
+        a[j] = qrand() % 4;
+        b[j] = qrand() % 16;
     }
     for (int j = 0; j < 8; j++) {
         str[j] = pers[a[j]][b[j]];
@@ -32,63 +25,13 @@ void MKPers::randomPers()
     }
     for (int j = 0; j < 8; j++) {
         while (str[j] == "NULL") {
-            a[j] = qrand() % 5;
-            b[j] = qrand() % 13;
+            a[j] = qrand() % 4;
+            b[j] = qrand() % 16;
             str[j] = pers[a[j]][b[j]];
             pers[a[j]][b[j]] = "NULL";
         }
     }
 
-}
-
-void MKPers::numbPlus()
-{
-    numb++;
-}
-
-void MKPers::winners(QString s)
-{
-    winPers[numb] = s;
-}
-
-QString MKPers::numbToStr()
-{
-    QString s = QString::number(numb + 1);
-    return s;
-}
-
-int MKPers::outInt()
-{
-    return numb;
-}
-
-void MKPers::subMaster()
-{
-    QTime midnight(0, 0, 0);
-    qsrand(midnight.secsTo (QTime::currentTime()));
-    int a, b;
-    a = qrand() % 5;
-    b = qrand() % 13;
-    subPers[0] = pers[a][b];
-    pers[a][b] = "NULL";
-}
-
-void MKPers::takeGrandPers(QString s)
-{
-    if (numb == 8)
-        grandPers[0] = s;
-    else
-        grandPers[1] = s;
-}
-
-QString MKPers::gPers(int i)
-{
-    return grandPers[i];
-}
-
-void MKPers::subLose(QString s, int i)
-{
-    subPers[i] = s;
 }
 
 void MKPers::save()
@@ -122,7 +65,6 @@ void MKPers::save()
             json["winPers"] = winPersArr;
             json["subPers"] = subPersArr;
             json["grandPers"] = grandPersArr;
-            json["numb"] = numb;
         }
     }
     QFile saveFile("data.json");
@@ -161,7 +103,6 @@ void MKPers::load()
         if (i < 2)
             grandPers[i] = grandPersArr[i].toString();
     }
-    numb = json["numb"].toInt();
 }
 
 void MKPers::stateSave(QString s, int i)

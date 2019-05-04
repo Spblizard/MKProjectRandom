@@ -13,38 +13,28 @@ class MKPers : public QObject
 {
     Q_OBJECT
 private:
-    int numb = 0;
     QString str[8];
     QString winPers[8];
     QString subPers[8];
     QString grandPers[2];
-    QString pers[5][13] = {
-        {"Scorpion", "Bi-han", "Magnectro", "Oniro", "Aqua", "Chamilion", "Ermac", "Cyrax Ninja", "Sektor Ninja", "Smoke Ninja", "Reptile", "Khrome", "Sub-zero"},
-        {"Komodai", "Nightmare", "Noob-Saibot", "Rain", "Snake", "Tremor", "Shewolf", "Frost", "Jade", "Khamilion", "Kitana", "Mileena", "Saphira"},
-        {"Ruby", "Skarlet", "Tanya", "Hydro", "Acid", "Cyber", "Leviathan", "Propogator", "Sheborg", "Smoke", "Cyrax", "Sektor", "Flame"},
-        {"Sub-zero unmask", "Raiden", "Fujin", "Cage", "Hornbuckle", "Jax", "Kabal", "Kai", "Kung-Lao", "Liu-Kang", "Nightwolf", "Sonya", "Stryker"},
-        {"Baraka", "Kano", "Hotaru", "Kobra", "Quan-Chi", "Reiko", "Shang Tsung", "Sheeva", "Sindel", "Mikro", "Shinnok", "Sang", "Li Mei"}
-                       };
+    QString pers[4][16] = {
+        {"Sheeva", "Baraka", "Sindel", "Nightwolf", "Jhonny Cage", "Liu Kang", "Shang Tsung", "Sonya", "Stryker", "Kabal", "Jax", "Kung Lao", "Kano", "Cyrax Cyborg", "Sektor", "Smoke Cyborg"},
+        {"Mileena", "Sub-Zero MKIII", "Kitana", "Jade UMKIII", "Sub-Zero UMKIII", "Ermac UMKIII", "Reptile UMKIII", "Rain UMKIII", "Scorpion UMKIII", "Tremor UMKIII", "Noob-Saibot UMKIII", "Raiden", "Hornbuckle", "Leviathan", "Flame", "Snake"},
+        {"Ruby", "Hydro", "Cyrax MKP", "Chameleon MKT", "Noob Smoke", "Magnectro", "Tanya", "Nightmare", "Khameleon", "Smoke Women", "Smoke MKT", "Dark", "Toxic", "Tremor Cyborg", "LK-52", "Hydro Cyborg"},
+        {"Reptile Cyborg", "Chameleon Cyborg", "Classic Blaze", "Super Sub-Zero", "Nightspirits", "Water God", "Reiko", "Reptile MKI", "Smoke MKII", "Rain MKII", "Avanger", "Ermac MKD", "Ermac MKI", "Sub-Zero MKI", "Scorpion MKI", "Jade MKII"}
+    };
 public:
     explicit MKPers(QObject *parent = nullptr);
 
 signals:
 
 public slots:
-    void subMaster();
-    Q_INVOKABLE QString mkPers(int);
-    Q_INVOKABLE void randomPers();
-    Q_INVOKABLE void numbPlus();
-    Q_INVOKABLE void winners(QString);
-    Q_INVOKABLE QString numbToStr();
-    Q_INVOKABLE int outInt();
-    Q_INVOKABLE void takeGrandPers(QString);
-    Q_INVOKABLE QString gPers(int);
-    Q_INVOKABLE void subLose(QString, int);
-    Q_INVOKABLE void save();
-    Q_INVOKABLE void load();
-    Q_INVOKABLE void stateSave(QString, int);
-    Q_INVOKABLE QString stateLoad(int);
+    QString mkPers(int);
+    void randomPers();
+    void save();
+    void load();
+    void stateSave(QString, int);
+    QString stateLoad(int);
 };
 
 #endif // MKPERS_H
