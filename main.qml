@@ -115,7 +115,7 @@ ApplicationWindow {
             border.color: "black"
             width: mainListView.width / 8
             height: mainListView.height
-            Text { anchors.centerIn: parent; text: model.name; }
+            Text { anchors.fill: parent; text: model.name; }
         }
     }
 
@@ -133,7 +133,11 @@ ApplicationWindow {
             border.color: "black"
             width: listView.width / widthSize
             height: listView.height / heightSize
-            Text { anchors.centerIn: parent; text: model.name; }
+            Text {
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: model.name }
             MouseArea {
                 anchors.fill: parent
                 onClicked: {

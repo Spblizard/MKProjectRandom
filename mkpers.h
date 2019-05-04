@@ -18,10 +18,10 @@ private:
     QString subPers[8];
     QString grandPers[2];
     QString pers[4][16] = {
-        {"Sheeva", "Baraka", "Sindel", "Nightwolf", "Jhonny Cage", "Liu Kang", "Shang Tsung", "Sonya", "Stryker", "Kabal", "Jax", "Kung Lao", "Kano", "Cyrax Cyborg", "Sektor", "Smoke Cyborg"},
-        {"Mileena", "Sub-Zero MKIII", "Kitana", "Jade UMKIII", "Sub-Zero UMKIII", "Ermac UMKIII", "Reptile UMKIII", "Rain UMKIII", "Scorpion UMKIII", "Tremor UMKIII", "Noob-Saibot UMKIII", "Raiden", "Hornbuckle", "Leviathan", "Flame", "Snake"},
-        {"Ruby", "Hydro", "Cyrax MKP", "Chameleon MKT", "Noob Smoke", "Magnectro", "Tanya", "Nightmare", "Khameleon", "Smoke Women", "Smoke MKT", "Dark", "Toxic", "Tremor Cyborg", "LK-52", "Hydro Cyborg"},
-        {"Reptile Cyborg", "Chameleon Cyborg", "Classic Blaze", "Super Sub-Zero", "Nightspirits", "Water God", "Reiko", "Reptile MKI", "Smoke MKII", "Rain MKII", "Avanger", "Ermac MKD", "Ermac MKI", "Sub-Zero MKI", "Scorpion MKI", "Jade MKII"}
+        {"Sheeva", "Baraka", "Sindel", "Nightwolf", "Jhonny\nCage", "Liu Kang", "Shang\nTsung", "Sonya", "Stryker", "Kabal", "Jax", "Kung Lao", "Kano", "Cyrax\nCyborg", "Sektor", "Smoke\nCyborg"},
+        {"Mileena", "Sub-Zero\nMKIII", "Kitana", "Jade\nUMKIII", "Sub-Zero\nUMKIII", "Ermac\nUMKIII", "Reptile\nUMKIII", "Rain\nUMKIII", "Scorpion\nUMKIII", "Tremor\nUMKIII", "Noob-Saibot\nUMKIII", "Raiden", "Hornbuckle", "Leviathan", "Flame", "Snake"},
+        {"Ruby", "Hydro", "Cyrax\nMKP", "Chameleon\nMKT", "Noob Smoke", "Magnectro", "Tanya", "Nightmare", "Khameleon", "Smoke\nWomen", "Smoke MKT", "Dark", "Toxic", "Tremor\nCyborg", "LK-52", "Hydro\nCyborg"},
+        {"Reptile\nCyborg", "Chameleon\nCyborg", "Classic\nBlaze", "Super\nSub-Zero", "Nightspirits", "Water God", "Reiko", "Reptile\nMKI", "Smoke\nMKII", "Rain\nMKII", "Avanger", "Ermac\nMKD", "Ermac\nMKI", "Sub-Zero\nMKI", "Scorpion\nMKI", "Jade\nMKII"}
     };
 public:
     explicit MKPers(QObject *parent = nullptr);
