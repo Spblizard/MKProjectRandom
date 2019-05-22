@@ -15,11 +15,13 @@ class MKPers : public QObject
 private:
     QString mStr[8];
     QString mPers[4][16] = {
-        {"Sheeva", "Baraka", "Sindel", "Nightwolf", "Jhonny\nCage", "Liu Kang", "Shang\nTsung", "Sonya", "Stryker", "Kabal", "Jax", "Kung Lao", "Kano", "Cyrax\nCyborg", "Sektor", "Smoke\nCyborg"},
-        {"Mileena", "Sub-Zero\nMKIII", "Kitana", "Jade\nUMKIII", "Sub-Zero\nUMKIII", "Ermac\nUMKIII", "Reptile\nUMKIII", "Rain\nUMKIII", "Scorpion\nUMKIII", "Tremor\nUMKIII", "Noob-Saibot\nUMKIII", "Raiden", "Hornbuckle", "Leviathan", "Flame", "Snake"},
-        {"Ruby", "Hydro", "Cyrax\nMKP", "Chameleon\nMKT", "Noob Smoke", "Magnectro", "Tanya", "Nightmare", "Khameleon", "Smoke\nWomen", "Smoke MKT", "Dark", "Toxic", "Tremor\nCyborg", "LK-52", "Hydro\nCyborg"},
-        {"Reptile\nCyborg", "Chameleon\nCyborg", "Classic\nBlaze", "Super\nSub-Zero", "Nightspirits", "Water God", "Reiko", "Reptile\nMKI", "Smoke\nMKII", "Rain\nMKII", "Avanger", "Ermac\nMKD", "Ermac\nMKI", "Sub-Zero\nMKI", "Scorpion\nMKI", "Jade\nMKII"}
+        {"Sub-Zero", "Scorpion", "Reptile", "Ermac", "Rain", "Tremor", "Smoke\nhuman", "Noob-Saibot", "Chameleon", "Cyrax\nhuman", "Sektor\nhuman", "Kitana", "Tanya", "Jade", "Skarlet", "Mileena"},
+        {"Khameleon", "Cyber\nSub-Zero", "Cyrax", "Sektor", "Smoke", "TriBorg", "Liu Kang", "Kung Lao", "Raiden", "Fujin", "Johnny\nCage", "Sonya", "Jax", "Stryker", "Sub-Zero\nunmask", "Nightwolf"},
+        {"Kabal", "Kano", "Baraka", "Sheeva", "Shang\nTsung", "Sindel", "Oniro", "Ruby", "Komodai", "Frost", "Khrome", "Bi-Han", "Hydro", "Sang", "Hornbuckle", "Flame"},
+        {"Cyber\nHydro", "Acid", "Propagator", "Sheborg", "Mikro", "Monnitor", "Leviathan", "Magnectro", "Saphira", "Shewolf", "Cyber\nReptile", "Cyber\nRain", "Reiko", "Cyber", "Ninja Flame", "Sareena"}
     };
+    QString mSavePers[4][16];
+
 public:
     explicit MKPers(QObject *parent = nullptr);
 
@@ -28,9 +30,12 @@ signals:
 public slots:
     QString mkPers(int);
     void randomPers();
+    void generateNewPers(QString);
     void save();
     void load();
     void stateSave(QString,QString, int);
+    void varSave(QString, bool);
+    bool varLoad(QString);
     QString stateLoad(QString, int);
     void stateCountListSave(QString, int);
     int stateCountListLoad(QString);

@@ -14,6 +14,8 @@ ApplicationWindow {
     property int count: 0
     property int round: 1
     property bool grandRound: false
+    property bool ultimateRound: false
+    property string grandMaster: ""
 
     Component.onCompleted: {
         for (var i = 0; i < 8; i++) {
@@ -45,7 +47,7 @@ ApplicationWindow {
     }
 
     function newRound() {
-        if (grandRound) {
+        if (grandRound || ultimateRound) {
             round = 1
             count = 0
         } else {
@@ -62,31 +64,56 @@ ApplicationWindow {
         }
     }
 
+    function newTournament() {
+        dataModel.clear()
+        grandDataModel.append({ "name": grandMaster })
+        mkp.generateNewPers(grandMaster)
+        newGenerate()
+    }
+
     function newGenerate() {
-        if (grandRound) {
-            for (var a = 0; a < dataModel.count; a++) {
-                listView.currentIndex = a
-                if (listView.currentItem.visible === true) {
-                    var obj = dataModel.get(a)
-                    var numb = obj["name"]
-                    dataModel.clear()
-                    dataModel.append({ "name": "Ultimate Champion MK Project " + numb })
-                    widthSize = 1
-                    listView.currentItem.enabled = false
-                }
-            }
+        if (grandDataModel.count === 8 && !ultimateRound) {
+            for (var j = 0; j < grandDataModel.count; j++)
+                dataModel.append(grandDataModel.get(j))
+            grandDataModel.clear()
+            widthSize = 8
+            ultimateRound = true
         } else if (mainDataModel.count === 8 && !grandRound) {
             for (var j = 0; j < mainDataModel.count; j++)
                 dataModel.append(mainDataModel.get(j))
             mainDataModel.clear()
             widthSize = 8
             grandRound = true
-        } else if (!grandRound){
+        } else if (!grandRound && !ultimateRound){
             mkp.randomPers()
             for (var i = 0; i < 8; i++) {
                 dataModel.append({ "name": mkp.mkPers(i)})
             }
             widthSize = 8
+        } else if (ultimateRound) {
+            for (var a = 0; a < dataModel.count; a++) {
+                listView.currentIndex = a
+                if (listView.currentItem.visible === true) {
+                    var obj = dataModel.get(a)
+                    var numb = obj["name"]
+                    dataModel.clear()
+                    dataModel.append({ "name": "Ultimate champion MK Project " + numb })
+                    widthSize = 1
+                    listView.currentItem.enabled = false
+                }
+            }
+        } else if (grandRound) {
+            for (var a = 0; a < dataModel.count; a++) {
+                listView.currentIndex = a
+                if (listView.currentItem.visible === true) {
+                    var obj = dataModel.get(a)
+                    var numb = obj["name"]
+                    dataModel.clear()
+                    dataModel.append({ "name": "Grand Master " + numb })
+                    grandMaster = numb
+                    widthSize = 1
+                }
+            }
         }
     }
 
@@ -147,12 +174,15 @@ ApplicationWindow {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if (index % 2) {
+                    if (listView.count === 1) {
+                        grandRound = false
+                        newTournament()
+                    } else if (index % 2) {
                         enabled = false
                         listView.currentIndex = index - 1
                         listView.currentItem.visible = false
                         count++
-                    } else {
+                    } else if ( !(index % 2)) {
                         enabled = false
                         listView.currentIndex = index + 1
                         listView.currentItem.visible = false
@@ -173,8 +203,11 @@ ApplicationWindow {
     Button {
         id: saveButton
         text: "save"
+        width: parent.width / 6
+        height: parent.height / 10
         anchors {
-            bottom: parent.bottom
+            top: listView.bottom
+            topMargin: 10
             left: parent.left
             leftMargin: (parent.width / 2) - width
         }
@@ -182,14 +215,24 @@ ApplicationWindow {
             mkp.save()
             mkp.stateCountListSave("count", count)
             mkp.stateCountListSave("round", round)
+            mkp.varSave("grandRound", grandRound)
+            mkp.varSave("ultimateRound", ultimateRound)
             mkp.stateCountListSave("widthSize", widthSize)
             mkp.stateCountListSave("mainDataModel", mainDataModel.count)
+            mkp.stateCountListSave("grandDataModel", grandDataModel.count)
             if (mainDataModel.count !== 0) {
                 for (var i = 0; i < mainDataModel.count; i++) {
                     var obj = mainDataModel.get(i)
                     mkp.stateSave("mainDataModel", obj["name"], i)
                 }
             }
+            if (grandDataModel.count !== 0) {
+                for (var a = 0; a < grandDataModel.count; a++) {
+                    var obj2 = grandDataModel.get(a)
+                    mkp.stateSave("grandDataModel", obj2["name"], a)
+                }
+            }
+
             mkp.stateCountListSave("dataModel", dataModel.count)
             for (var j = 0; j < dataModel.count; j++) {
                 listView.currentIndex = j
@@ -207,10 +250,14 @@ ApplicationWindow {
         text: "load"
         anchors.left: saveButton.right
         anchors.top: saveButton.top
+        width: saveButton.width
+        height: saveButton.height
         onClicked: {
             mkp.load()
             count = mkp.stateCountListLoad("count")
             round = mkp.stateCountListLoad("round")
+            grandRound = mkp.varLoad("grandRound")
+            ultimateRound = mkp.varLoad("ultimateRound")
             widthSize = mkp.stateCountListLoad("widthSize")
             var countMainData = mkp.stateCountListLoad("mainDataModel")
             if (countMainData !== 0) {
@@ -218,6 +265,13 @@ ApplicationWindow {
                 for (var i = 0; i < countMainData; i++)
                     mainDataModel.append({ "name": mkp.stateLoad("mainDataModel", i) })
             }
+            var countGrandData = mkp.stateCountListLoad("grandDataModel")
+            if (countGrandData !== 0) {
+                grandDataModel.clear()
+                for (var a = 0; a < countGrandData; a++)
+                    grandDataModel.append({ "name": mkp.stateLoad("grandDataModel", a) })
+            }
+
             var countData = mkp.stateCountListLoad("dataModel")
             dataModel.clear()
             for (var j = 0; j < countData; j++) {
@@ -230,4 +284,27 @@ ApplicationWindow {
             }
         }
     }
+    ListView {
+        id: grandListView
+        width: parent.width
+        height: parent.height / 4
+        anchors.bottom: parent.bottom
+        model: ListModel {
+            id: grandDataModel
+        }
+        orientation: Qt.Horizontal
+        layoutDirection: Qt.LeftToRight
+        delegate: Rectangle {
+            border.color: "black"
+            width: mainListView.width / 8
+            height: mainListView.height
+            Text {
+                anchors.fill: parent
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: model.name
+            }
+        }
+    }
+
 }

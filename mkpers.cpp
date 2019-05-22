@@ -2,6 +2,10 @@
 
 MKPers::MKPers(QObject *parent) : QObject(parent)
 {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 16; j++)
+            mSavePers[i][j] = mPers[i][j];
+    }
     randomPers();
 }
 
@@ -34,6 +38,18 @@ void MKPers::randomPers()
 
 }
 
+void MKPers::generateNewPers(QString grandMaster)
+{
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (mSavePers[i][j] == grandMaster) {
+                mSavePers[i][j] = "None";
+            }
+            mPers[i][j] = mSavePers[i][j];
+        }
+    }
+}
+
 void MKPers::save()
 {
     QJsonObject json;
@@ -47,6 +63,15 @@ void MKPers::save()
     for (int i = 0; i < 4; i++) {
         persArr[i] = QJsonArray::fromStringList(persList[i]);
         inti[i] = "pers" + QString::number(i);
+        json[inti[i]] = persArr[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 16; j++)
+           persList[i] << mSavePers[i][j];
+    }
+    for (int i = 0; i < 4; i++) {
+        persArr[i] = QJsonArray::fromStringList(persList[i]);
+        inti[i] = "savePers" + QString::number(i);
         json[inti[i]] = persArr[i];
     }
     QFile saveFile("data.json");
@@ -66,11 +91,19 @@ void MKPers::load()
     QJsonArray persArr2 = json["pers1"].toArray();
     QJsonArray persArr3 = json["pers2"].toArray();
     QJsonArray persArr4 = json["pers3"].toArray();
+    QJsonArray saveArr1 = json["savePers0"].toArray();
+    QJsonArray saveArr2 = json["savePers1"].toArray();
+    QJsonArray saveArr3 = json["savePers2"].toArray();
+    QJsonArray saveArr4 = json["savePers3"].toArray();
     for (int i = 0; i < 16; i++) {
         mPers[0][i] = persArr1[i].toString();
         mPers[1][i] = persArr2[i].toString();
         mPers[2][i] = persArr3[i].toString();
         mPers[3][i] = persArr4[i].toString();
+        mSavePers[0][i] = saveArr1[i].toString();
+        mSavePers[1][i] = saveArr2[i].toString();
+        mSavePers[2][i] = saveArr3[i].toString();
+        mSavePers[3][i] = saveArr4[i].toString();
     }
 }
 
@@ -87,6 +120,31 @@ void MKPers::stateSave(QString list, QString pers, int i)
     QFile file1("data.json");
     file1.open(QIODevice::WriteOnly);
     file1.write(jsonDoc1.toJson());
+}
+
+void MKPers::varSave(QString var, bool par)
+{
+    QFile file("data.json");
+    file.open(QIODevice::ReadOnly);
+    QJsonObject json;
+    QJsonDocument jsonDoc(QJsonDocument::fromJson (file.readAll()));
+    json = jsonDoc.object();
+    json[var] = par;
+    QJsonDocument jsonDoc1(json);
+    QFile file1("data.json");
+    file1.open(QIODevice::WriteOnly);
+    file1.write(jsonDoc1.toJson());
+}
+
+bool MKPers::varLoad(QString var)
+{
+    QJsonObject json;
+    QFile loadFile("data.json");
+    loadFile.open(QIODevice::ReadOnly);
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(loadFile.readAll()));
+    json = jsonDoc.object();
+    return json[var].toBool();
+
 }
 
 QString MKPers::stateLoad(QString list, int i)
