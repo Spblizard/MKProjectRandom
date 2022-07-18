@@ -16,12 +16,10 @@ QString MKPers::mkPers(int i)
 
 void MKPers::randomPers()
 {
-    QTime midnight(0, 0, 0);
-    qsrand(midnight.secsTo (QTime::currentTime()));
     int a[8], b[8];
     for (int j = 0; j < 8; j++) {
-        a[j] = qrand() % 4;
-        b[j] = qrand() % 16;
+		a[j] = QRandomGenerator::global()->bounded(0, 4);
+		b[j] = QRandomGenerator::global()->bounded(0, 16);
     }
     for (int j = 0; j < 8; j++) {
         mStr[j] = mPers[a[j]][b[j]];
@@ -29,8 +27,8 @@ void MKPers::randomPers()
     }
     for (int j = 0; j < 8; j++) {
         while (mStr[j] == "NULL") {
-            a[j] = qrand() % 4;
-            b[j] = qrand() % 16;
+			a[j] = QRandomGenerator::global()->bounded(0, 4);
+			b[j] = QRandomGenerator::global()->bounded(0, 16);
             mStr[j] = mPers[a[j]][b[j]];
             mPers[a[j]][b[j]] = "NULL";
         }
