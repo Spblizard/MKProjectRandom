@@ -11,6 +11,10 @@ qt_add_executable(${PROJECT_NAME}
     main.cpp
     mkpers.h
     mkpers.cpp
+    persdata.h
+    persdata.cpp
+    persmodel.h
+    persmodel.cpp
 )
 
 qt_add_qml_module(${PROJECT_NAME}

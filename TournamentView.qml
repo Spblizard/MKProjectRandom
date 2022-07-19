@@ -10,17 +10,42 @@ Item {
 	property int heightSize: 1
 	property int count: 0
 	property int round: 1
-	property bool grandRound: false
-	property bool ultimateRound: false
-	property string grandMaster: ""
+	property bool championsFull: false
+	property bool loseRound: false
+	property bool nextChampions: false
+	property bool grandChampions: false
+	property string loseMaster: ""
+	property string championMaster: ""
+	property string ultimateMaster: ""
 
 	Component.onCompleted: {
-		print(root.width)
-		print(root.height)
+		firstGenerate()
+		//timer.start()
+	}
+
+	function firstGenerate() {
 		for (var i = 0; i < 8; i++) {
 			dataModel.append({ "name": mkp.mkPers(i)})
 		}
-		//timer.start()
+	}
+
+	function defaultParams() {
+		widthSize = 8
+		heightSize = 1
+		count = 0
+		round = 1
+		championsFull = false
+		loseRound = false
+		nextChampions = false
+		grandChampions = false
+		loseMaster = ""
+		championMaster = ""
+		ultimateMaster = ""
+		dataModel.clear()
+		champions1DataModel.clear()
+		champions2DataModel.clear()
+		mkp.defaultPers()
+		firstGenerate()
 	}
 
 	function nextRound() {
@@ -45,74 +70,74 @@ Item {
 			widthSize = 2
 	}
 
-	function newRound() {
-		if (grandRound || ultimateRound) {
-			round = 1
-			count = 0
+	function loseRound1() {
+		var arr = new Array()
+		for (var i = 0; i < listView.count; i++) {
+			listView.currentIndex = i
+			if (listView.currentItem.visible === true)
+				arr.push(dataModel.get(i)["name"])
+		}
+		dataModel.clear()
+		if (!nextChampions) {
+			for (var j = 0; j < champions1DataModel.count; j++) {
+				dataModel.append({ "name": champions1DataModel.get(j)["name"]})
+			}
+			champions1DataModel.clear()
+			for (var k = 0; k < arr.length; k++) {
+				champions1DataModel.append({ "name": arr[k]})
+			}
 		} else {
-			for (var i = 0; i < listView.count; i++) {
-				listView.currentIndex = i
-				if (listView.currentItem.visible === true) {
-					var obj = dataModel.get(i)
-					mainDataModel.append({ "name": obj["name"] })
-					dataModel.clear()
-					round = 1
-					count = 0
-				}
+			for (var a = 0; a < champions2DataModel.count; a++) {
+				dataModel.append({ "name": champions2DataModel.get(a)["name"]})
+			}
+			champions2DataModel.clear()
+			for (var b = 0; b < arr.length; b++) {
+				champions2DataModel.append({ "name": arr[b]})
 			}
 		}
 	}
 
-	function newTournament() {
-		dataModel.clear()
-		grandDataModel.append({ "name": grandMaster })
-		mkp.generateNewPers(grandMaster)
-		newGenerate()
+	function newRound() {
+		for (var i = 0; i < listView.count; i++) {
+			listView.currentIndex = i
+			if (listView.currentItem.visible === true) {
+				var obj = dataModel.get(i)
+				if (champions1DataModel.count !== 8) {
+					ChampModel.addPers(obj["name"])
+					champions1DataModel.append({ "name": obj["name"] })
+				} else if(champions2DataModel.count !== 8) {
+					ChampModel.addPers(obj["name"])
+					champions2DataModel.append({ "name": obj["name"] })
+					if (champions2DataModel.count === 8)
+						championsFull = true
+				}
+				dataModel.clear()
+				round = 1
+				count = 0
+			}
+		}
 	}
 
 	function newGenerate() {
-		if (grandDataModel.count === 8 && !ultimateRound) {
-			for (var j = 0; j < grandDataModel.count; j++)
-				dataModel.append(grandDataModel.get(j))
-			grandDataModel.clear()
+		if (championsFull) {
+			if (!nextChampions) {
+			for (var i = 0; i < champions1DataModel.count; i++)
+				dataModel.append(champions1DataModel.get(i))
+			champions1DataModel.clear()
+			} else {
+				dataModel.clear()
+				for (var j = 0; j < champions2DataModel.count; j++)
+					dataModel.append(champions2DataModel.get(j))
+				champions2DataModel.clear()
+			}
+
 			widthSize = 8
-			ultimateRound = true
-		} else if (mainDataModel.count === 8 && !grandRound) {
-			for (var j = 0; j < mainDataModel.count; j++)
-				dataModel.append(mainDataModel.get(j))
-			mainDataModel.clear()
-			widthSize = 8
-			grandRound = true
-		} else if (!grandRound && !ultimateRound){
+		} else {
 			mkp.randomPers()
 			for (var i = 0; i < 8; i++) {
 				dataModel.append({ "name": mkp.mkPers(i)})
 			}
 			widthSize = 8
-		} else if (ultimateRound) {
-			for (var a = 0; a < dataModel.count; a++) {
-				listView.currentIndex = a
-				if (listView.currentItem.visible === true) {
-					var obj = dataModel.get(a)
-					var numb = obj["name"]
-					dataModel.clear()
-					dataModel.append({ "name": "Ultimate champion MK Project " + numb })
-					widthSize = 1
-					listView.currentItem.enabled = false
-				}
-			}
-		} else if (grandRound) {
-			for (var a = 0; a < dataModel.count; a++) {
-				listView.currentIndex = a
-				if (listView.currentItem.visible === true) {
-					var obj = dataModel.get(a)
-					var numb = obj["name"]
-					dataModel.clear()
-					dataModel.append({ "name": "Grand Master " + numb })
-					grandMaster = numb
-					widthSize = 1
-				}
-			}
 		}
 	}
 
@@ -128,19 +153,19 @@ Item {
 	}
 
 	ListView {
-		id: mainListView
+		id: champions1ListView
 		width: parent.width
 		height: parent.height / 4
 		anchors.top: parent.top
 		model: ListModel {
-			id: mainDataModel
+			id: champions1DataModel
 		}
 		orientation: Qt.Horizontal
 		layoutDirection: Qt.LeftToRight
 		delegate: Rectangle {
 			border.color: "black"
-			width: mainListView.width / 8
-			height: mainListView.height
+			width: champions1ListView.width / 8
+			height: champions1ListView.height
 			Text {
 				anchors.fill: parent
 				verticalAlignment: Text.AlignVCenter
@@ -160,6 +185,8 @@ Item {
 		}
 		orientation: Qt.Horizontal
 		layoutDirection: Qt.LeftToRight
+
+
 		delegate: Rectangle {
 			border.color: "black"
 			width: listView.width / widthSize
@@ -173,32 +200,150 @@ Item {
 			MouseArea {
 				anchors.fill: parent
 				onClicked: {
-					if (listView.count === 1) {
-						grandRound = false
-						newTournament()
-					} else if (index % 2) {
+					if (index % 2) {
 						enabled = false
 						listView.currentIndex = index - 1
+						WinsModel.addPers(dataModel.get(listView.currentIndex + 1)["name"])
 						listView.currentItem.visible = false
+						if (championsFull && !loseRound) {
+							if (round !== 3) {
+								if (!nextChampions)
+									champions1DataModel.append({"name": dataModel.get(listView.currentIndex)["name"]})
+								else
+									champions2DataModel.append({"name": dataModel.get(listView.currentIndex)["name"]})
+							} else
+								if (!nextChampions)
+									champions1DataModel.append({"name": dataModel.get(listView.currentIndex + 1)["name"]})
+								else
+									champions2DataModel.append({"name": dataModel.get(listView.currentIndex + 1)["name"]})
+						} else if (grandChampions) {
+							if (loseMaster === "") {
+								loseMaster = dataModel.get(index)["name"]
+								GrndChampModel.addPers(loseMaster)
+							} else if (championMaster === "") {
+								championMaster = dataModel.get(index)["name"]
+								GrndChampModel.addPers(championMaster)
+							} else {
+								ultimateMaster = dataModel.get(index)["name"]
+								UltChampModel.addPers(ultimateMaster)
+							}
+						}
 						count++
 					} else if ( !(index % 2)) {
 						enabled = false
 						listView.currentIndex = index + 1
+						WinsModel.addPers(dataModel.get(listView.currentIndex - 1)["name"])
 						listView.currentItem.visible = false
+						if (championsFull && !loseRound) {
+							if (round !== 3)
+								if (!nextChampions)
+									champions1DataModel.append({"name": dataModel.get(listView.currentIndex)["name"]})
+								else
+									champions2DataModel.append({"name": dataModel.get(listView.currentIndex)["name"]})
+							else
+								if (!nextChampions)
+									champions1DataModel.append({"name": dataModel.get(listView.currentIndex - 1)["name"]})
+								else
+									champions2DataModel.append({"name": dataModel.get(listView.currentIndex - 1)["name"]})
+						} else if (grandChampions) {
+							if (loseMaster === "") {
+								loseMaster = dataModel.get(index)["name"]
+								GrndChampModel.addPers(loseMaster)
+							} else if (championMaster === "") {
+								championMaster = dataModel.get(index)["name"]
+								GrndChampModel.addPers(championMaster)
+							} else {
+								ultimateMaster = dataModel.get(index)["name"]
+								UltChampModel.addPers(ultimateMaster)
+							}
+						}
 						count++
 					}
+					if (count === 6) {
+						loseRound = false
+						loseRound1()
+						count = 0
+						round++
+					} else if (count === 5 && round === 2) {
+						loseRound = false
+						loseRound1()
+						round++
+						count = 0
+					} else if (count === 1 && grandChampions) {
+						if (championMaster === "") {
+							dataModel.clear()
+							dataModel.append({"name": champions1DataModel.get(0)["name"]})
+							dataModel.append({"name": champions2DataModel.get(0)["name"]})
+							count = 0
+						} else if (ultimateMaster === "") {
+							dataModel.clear()
+							count = 0
+							dataModel.append({"name": loseMaster})
+							dataModel.append({"name": championMaster})
+						} else {
+							dataModel.clear()
+							dataModel.append({"name": "Ultimate Champion MKProject " + ultimateMaster})
+							newButton.visible = true
+							widthSize = 1
+						}
+					}
 					if (count === 4 && round === 1) {
-						nextRound()
+						if (championsFull) {
+							loseRound = true
+							widthSize = 4
+							loseRound1()
+						} else
+							nextRound()
+					} else if (count === 4 && round === 2) {
+						loseRound = true
+						widthSize = 2
+						loseRound1()
 					} else if (count === 2 && round === 2) {
-						nextRound()
+						if (championsFull) {
+							loseRound = true
+							loseRound1()
+						} else
+							nextRound()
 					} else if (count === 1 && round === 3) {
-						newRound()
-						newGenerate()
+						if (nextChampions) {
+							dataModel.clear()
+							grandChampions = true
+							championsFull = false
+							dataModel.append({"name": champions1DataModel.get(1)["name"]})
+							dataModel.append({"name": champions2DataModel.get(1)["name"]})
+							count = 0
+						} else if (championsFull) {
+							nextChampions = true
+							round = 1
+							count = 0
+							newGenerate()
+						} else {
+							newRound()
+							newGenerate()
+						}
 					}
 				}
 			}
 		}
 	}
+
+	Button {
+		id: newButton
+		text: "new"
+		width: saveButton.width
+		height: saveButton.height
+		visible: false
+		palette.buttonText: "black"
+		anchors {
+			top: saveButton.top
+			left: parent.left
+		}
+		onClicked: {
+			defaultParams()
+			visible = false
+		}
+	}
+
 	Button {
 		id: saveButton
 		text: "save"
@@ -215,21 +360,25 @@ Item {
 			mkp.save()
 			mkp.stateCountListSave("count", count)
 			mkp.stateCountListSave("round", round)
-			mkp.varSave("grandRound", grandRound)
-			mkp.varSave("ultimateRound", ultimateRound)
 			mkp.stateCountListSave("widthSize", widthSize)
-			mkp.stateCountListSave("mainDataModel", mainDataModel.count)
-			mkp.stateCountListSave("grandDataModel", grandDataModel.count)
-			if (mainDataModel.count !== 0) {
-				for (var i = 0; i < mainDataModel.count; i++) {
-					var obj = mainDataModel.get(i)
-					mkp.stateSave("mainDataModel", obj["name"], i)
+			mkp.varSave("championsFull", championsFull)
+			mkp.varSave("loseRound", loseRound)
+			mkp.varSave("nextChampions", nextChampions)
+			mkp.varSave("grandChampions", grandChampions)
+			mkp.stateStringListSave("loseMaster", loseMaster)
+			mkp.stateStringListSave("championMaster", championMaster)
+			mkp.stateCountListSave("champions1DataModel", champions1DataModel.count)
+			mkp.stateCountListSave("champions2DataModel", champions2DataModel.count)
+			if (champions1DataModel.count !== 0) {
+				for (var i = 0; i < champions1DataModel.count; i++) {
+					var obj = champions1DataModel.get(i)
+					mkp.stateSave("champions1DataModel", obj["name"], i)
 				}
 			}
-			if (grandDataModel.count !== 0) {
-				for (var a = 0; a < grandDataModel.count; a++) {
-					var obj2 = grandDataModel.get(a)
-					mkp.stateSave("grandDataModel", obj2["name"], a)
+			if (champions2DataModel.count !== 0) {
+				for (var a = 0; a < champions2DataModel.count; a++) {
+					var obj2 = champions2DataModel.get(a)
+					mkp.stateSave("champions2DataModel", obj2["name"], a)
 				}
 			}
 
@@ -257,20 +406,24 @@ Item {
 			mkp.load()
 			count = mkp.stateCountListLoad("count")
 			round = mkp.stateCountListLoad("round")
-			grandRound = mkp.varLoad("grandRound")
-			ultimateRound = mkp.varLoad("ultimateRound")
 			widthSize = mkp.stateCountListLoad("widthSize")
-			var countMainData = mkp.stateCountListLoad("mainDataModel")
+			championsFull = mkp.varLoad("championsFull")
+			loseRound = mkp.varLoad("loseRound")
+			nextChampions = mkp.varLoad("nextChampions")
+			grandChampions = mkp.varLoad("grandChampions")
+			loseMaster = mkp.stateStringListLoad("loseMaster")
+			championMaster = mkp.stateStringListLoad("championMaster")
+			var countMainData = mkp.stateCountListLoad("champions1DataModel")
 			if (countMainData !== 0) {
-				mainDataModel.clear()
+				champions1DataModel.clear()
 				for (var i = 0; i < countMainData; i++)
-					mainDataModel.append({ "name": mkp.stateLoad("mainDataModel", i) })
+					champions1DataModel.append({ "name": mkp.stateLoad("champions1DataModel", i) })
 			}
-			var countGrandData = mkp.stateCountListLoad("grandDataModel")
+			var countGrandData = mkp.stateCountListLoad("champions2DataModel")
 			if (countGrandData !== 0) {
-				grandDataModel.clear()
+				champions2DataModel.clear()
 				for (var a = 0; a < countGrandData; a++)
-					grandDataModel.append({ "name": mkp.stateLoad("grandDataModel", a) })
+					champions2DataModel.append({ "name": mkp.stateLoad("champions2DataModel", a) })
 			}
 
 			var countData = mkp.stateCountListLoad("dataModel")
@@ -286,7 +439,7 @@ Item {
 		}
 	}
 
-	Button {
+    Button {
 		id: swipeButton
 		width: saveButton.width
 		height: saveButton.height
@@ -302,19 +455,19 @@ Item {
 	}
 
 	ListView {
-		id: grandListView
+		id: champions2ListView
 		width: parent.width
 		height: parent.height / 4
 		anchors.bottom: parent.bottom
 		model: ListModel {
-			id: grandDataModel
+			id: champions2DataModel
 		}
 		orientation: Qt.Horizontal
 		layoutDirection: Qt.LeftToRight
 		delegate: Rectangle {
 			border.color: "black"
-			width: mainListView.width / 8
-			height: mainListView.height
+			width: champions1ListView.width / 8
+			height: champions1ListView.height
 			Text {
 				anchors.fill: parent
 				verticalAlignment: Text.AlignVCenter
